@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="tooltip.js"></script>
+        <link type="text/css" rel="stylesheet" href="tooltip.css">   <title>Original Page</title>
+
+        <style>
+            
+            p.css-vertical-text {
+                color:#a3a3a3;
+                border:0px solid red;
+              //  writing-mode:tb-lr;
+                -webkit-transform:rotate(-45deg);
+                -moz-transform:rotate(-45deg);
+                -o-transform: rotate(-45deg);
+                
+              //  display:block;
+               
+              
+                font-family: ‘Trebuchet MS’, Helvetica, sans-serif;
+                font-size:10px;
+                font-weight:normal;
+               // text-shadow: 0px 0px 1px #333;
+                position:relative;
+                
+            }
+            
+            .point {
+                margin-left: -6px;
+                margin-right: -6px;
+                position: absolute;
+            } 
+
+    
+        </style>
+        <script>
+
+            //           $(document).ready(function() {
+//                $("#2").hover(function() {
+//                    var c = document.getElementById("myCanvas");
+//                    var ctx = c.getContext("2d");
+//
+//
+//                    var tLeft = $("#1").position().left;
+//                    var tTop = $("#1").position().top + ($("#1").height() / 2);
+//
+//
+//                    ctx.moveTo(tLeft, tTop);
+//
+//                    var tLeft = $("#2").position().left;
+//                    var tTop = $("#2").position().top + ($("#2").height() / 2);
+//
+//                    ctx.lineTo(tLeft, tTop);
+//
+//                    ctx.stroke();
+
+//                });
+            //          });
+
+
+
+
+
+            function  authNext(id) {
+
+                console.log("send the id--> " + id);
+                $.post("Secured.jsp",
+                        {
+                            auth: "id",
+                            id: id
+
+                        },
+                function(data, status) {
+                    console.log("authNext:" + data);
+
+                    var obj = jQuery.parseJSON(data);
+
+                    if (obj.len === 0) {
+                        {
+                            console.log("done");
+                              $("#result").html("You are a Human!");
+                            
+                        }
+                    } else
+                        writeNext(data);
+
+
+                    ;
+                });
+
+            }
+
+
+            function doEffect(point) {
+
+                $(point).attr("src", "done.png");
+
+            }
+
+
+            function writeNext(data) {
+
+
+
+                var obj = jQuery.parseJSON(data);
+
+
+                if (obj.len === 2) {
+
+
+                    WriteNextPoint(obj.x1, obj.y1, obj.r1);
+                    WriteNextPoint(obj.x2, obj.y2, obj.r2);
+
+                } else if (obj.len === 1)
+                {
+                    WriteNextPoint(obj.x, obj.y, obj.r);
+                    console.log("fun:write next :id recieved with value of" + obj.r);
+
+
+                }
+
+            }
+
+
+            function WriteNextPoint(x, y, id) {
+                var elem = document.createElement("img");
+                elem.setAttribute("src", "ready.png");
+                elem.setAttribute("id", id);
+                //Debug adding class and css to the elemenet
+
+
+                document.getElementById("auth").appendChild(elem);
+                $("#" + id + "").addClass("point");
+                $("#" + id + "").css({"left": x});
+                $("#" + id + "").css({"top": y});
+
+                $("#" + id + "").hover(function() {
+
+                    console.log("id-->" + id);
+
+                    doEffect(this);
+
+                    console.log("before calling auth Next");
+                    authNext(this.id);
+
+                    $("#" + id + "").off('mouseenter mouseleave');
+
+
+                });
+
+            }
+
+
+//  function authClick1() {
+//      
+//        tooltip.pop(this, '#auth');
+//      
+//  }
+//  
+            function authClick(this_) {
+
+
+                $(".point").remove();
+
+                $.post("Secured.jsp",
+                        {
+                            auth: "req"
+
+                        },
+                function(data, status) {
+
+                    writeNext(data);
+
+
+
+                });
+
+                tooltip.pop(this_, '#auth');
+            }
+
+
+
+
+
+        </script>
+
+    </head>
+    <body>
+
+
+        <!--<img src="./sec.jpg"/>-->
+
+        hello text
+
+        <br><br><br>
+
+        hello hello hello hello hello hello hello hello.... :)  
+
+        <span onmouseover="authClick(this)" class="tooltip">Pay!</span>
+
+        <div style="display:none;">
+            <div id="auth" style="width: 240px;height: 130px">
+ <p class="css-vertical-text">
+              
+                
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                    Follow points to make the payment..
+                </p>
+        
+            </div>
+        </div>
+
+        <br><br> 
+        <div style="color: red" id="result"> </div> 
+    </body>
+</html>
+
+

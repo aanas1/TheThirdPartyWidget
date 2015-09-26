@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="tooltip.js"></script>
+        <link type="text/css" rel="stylesheet" href="tooltip.css">   <title>Original Page</title>
+
+        <style>
+            #nosession {
+                visibility: hidden;
+            }
+
+            #session {
+                visibility: hidden;
+            }
+
+            #repeatPattern {
+                visibility: hidden;
+                color: #b20000;
+                font-size: large
+
+            }
+
+            .yBoarder {
+                border-style: solid;
+                border-width: 10px;
+                border-color: gold                            
+            }
+
+            .rBoarder {
+                border-style: solid;
+                border-width: 10px;
+                border-color: salmon                            
+            }
+            .point {
+
+            } 
+
+
+        </style>
+
+
+        <!-- ================== script ==================== -->
+
+        <script>
+
+            isConf = 0;
+            firstPattern = 0;
+            username = "user";
+
+            function doEffectI(idN_) {
+
+                $(idN_).attr("src", "done.png");
+
+            }
+
+
+            function addDefImg(idN_) {
+                $("#" + idN_ + "").attr("src", "ready.png");
+            }
+
+            var points = [];
+
+            function authClick(this_) {
+                points = [];
+                for (i = 1; i < 10; i++)
+                {
+                    var idN = "p" + i;
+
+                    addDefImg(idN);
+
+                }
+
+
+                for (i = 1; i < 10; i++)
+                {
+
+                    (function(j) {
+                        var idNE = "#p" + j + "";
+
+                        $(idNE).mouseover(function() {
+
+                            if (points.indexOf(j) === -1) {
+
+                                points.push(j);
+
+                            } else {
+                                console.log(j + "ignored");
+                            }
+
+                            doEffectI(idNE);
+
+                            $(idNE).off('mouseenter mouseleave mouseover');
+
+                            console.log("chosen" + idNE);
+                        });
+                    })(i);
+
+                }
+
+                tooltip.pop(this_, '#auth');
+            }
+
+
+            function inFun(this_) {
+                $(this_).removeClass("yBoarder");
+                $(this_).addClass("rBoarder");
+
+            }
+ 
+            //////////////// out Function///////////
+
+            function outFun(this_) {
+                $(this_).removeClass("rBoarder");
+                $(this_).addClass("yBoarder");
+
+                //should send the server the saved valuses
+                console.log(points.toString());
+                currentPattern = points.toString();
+
+                if (isConf === 0) {
+                    firstPattern = currentPattern;
+                    isConf = 1;
+                    // ask the user to confirm
+
+                    $("#repeatPattern").visible();
+
+                } else {
+
+                    $("#repeatPattern").invisible();
+
+                    if (currentPattern === firstPattern) {
+                        $.post("app_register.jsp",
+                                {
+                                    pattern: points.toString()
+
+                                },
+                        function(data, status) {
+
+                            var obj = jQuery.parseJSON(data);
+
+                            console.log(data);
+                            console.log(obj.isSaved);
+
+                            if (obj.isSaved + "" === "true") {
+                                $("#result").html("successfully saved your Patter:" + points.toString());
+                            } else {
+                                $("#result").html("You are already registerd with the same name");
+                            }
+                        });
+                    } else {
+
+                        $(repeatPattern).html("Patterns mismatched, Please re-enter your patterns again");
+                    }
+                }
+            }
+
+            // check user--
+            jQuery(document).ready(function($) {
+                (function($) {
+
+                    $.fn.visible = function() {
+                        return this.each(function() {
+                            $(this).css("visibility", "visible");
+                        });
+                    };
+                }(jQuery));
+            });
+            
+            jQuery(document).ready(function($) {
+                (function($) {
+                    $.fn.invisible = function() {
+                        return this.each(function() {
+                            $(this).css("visibility", "hidden");
+                        });
+                    };
+
+                }(jQuery));
+            });
+
+            jQuery(document).ready(function($) {
+                $.post("heartbeat.jsp",
+                        {
+                            heartbeat: "heartbeat"
+
+                        },
+                function(data, status) {
+
+                    var obj = jQuery.parseJSON(data);
+
+
+
+                    console.log(obj.user_name);
+
+
+                    if (obj.user_name + "" === "404") {
+                        $("#nosession").visible();
+
+                    } else {
+                        $("#user_name").html(obj.user_name);
+
+                        $("#session").visible();
+
+                    }
+
+                });
+            });
+
+
+            $(document).ready(function() {
+                $("#panel").hover(function() {
+//                    alert(1);
+                    inFun(this);
+                }, function() {
+//                    alert(2);
+                    outFun(this);
+                });
+            });
+
+        </script>
+
+    </head>
+
+    <body style="color: chocolate">
+
+        <!--<img src="./sec.jpg"/>-->
+
+        <h2>Payment Gateway</h2>
+
+
+
+        <div id="nosession"> Please login first to procede with the payment,
+
+            <a href="./login.html">Login?</a>
+            <br> do not you have account, <a href="./user_registration.html">Register?</a>
+
+        </div>
+
+        <div id="session">
+            welcome  <b id="user_name"> </b><br>
+            <h3>New Patter Registeration</h3>
+            You are kindly requested to  <br >
+            draw the pattern you should use during user verification process 
+            <br><br>
+            <div id="repeatPattern">  Please repeat Entering the pattern for confirmation</div>
+
+            <span onmouseover="authClick(this)" class="tooltip">Record!</span>
+
+            <div style="display:none;">
+
+                <div id="auth" style="width: 170px;height: 190px">
+
+                    <div id ="panel" class="yBoarder" style="width: 150px;height: 170px">
+
+                        <table border="0" cellpadding="12">
+
+                            <tr>
+                                <td><img id="p1" class="point" ></td>
+                                <td><img id="p2" class="point" ></td>
+                                <td><img id="p3" class="point" ></td>
+                            </tr>
+                            <tr>
+                                <td><img id="p4" class="point" ></td>
+                                <td><img id="p5" class="point" ></td>
+                                <td><img id="p6" class="point" ></td>
+                            </tr>
+                            <tr>
+                                <td><img id="p7" class="point" ></td>
+                                <td><img id="p8" class="point" ></td>
+                                <td><img id="p9" class="point" ></td>
+                            </tr>
+
+                        </table>
+
+
+
+
+                    </div>
+
+
+                </div>
+            </div>
+
+            <br><br> 
+            <div style="color: red" id="result"> </div>
+
+
+            <br>
+            <br>
+
+
+            <i> This is the third-party widget like facebook like button<br>or pay using payball</i>
+
+        </div>
+
+    </body>
+</html>
+
+

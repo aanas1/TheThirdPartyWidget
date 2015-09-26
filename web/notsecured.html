@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>not secured</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+
+            #nosession {
+                visibility: hidden;
+            }
+
+            #pay {
+                font-style: italic;
+                color: blue;
+               
+            }
+
+            #session {
+                visibility: hidden;
+            }  
+
+            #nopattern{
+                visibility: hidden; 
+                color: #9a0404;
+
+            }
+
+            #action{
+
+                visibility: hidden;
+            }
+            .yBoarder {
+                border-style: solid;
+                border-width: 10px;
+                border-color: gold                            
+            }
+
+            .rBoarder {
+                border-style: solid;
+                border-width: 10px;
+                border-color: salmon                            
+            }
+            .point {
+
+            } 
+
+        </style>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="tooltip.js"></script>
+        <script>
+            // check user--
+            jQuery(document).ready(function($) {
+                (function($) {
+
+                    $.fn.visible = function() {
+                        return this.each(function() {
+                            $(this).css("visibility", "visible");
+                        });
+                    };
+                }(jQuery));
+            });
+
+            jQuery(document).ready(function($) {
+                (function($) {
+                    $.fn.invisible = function() {
+                        return this.each(function() {
+                            $(this).css("visibility", "hidden");
+                        });
+                    };
+
+                }(jQuery));
+            });
+
+
+            function pay() {
+
+                $.post("notsecured.jsp",
+                        {
+                            notsecured: "notsecured"
+
+                        },
+                function(data, status) {
+
+                    var obj = jQuery.parseJSON(data);
+
+                    if (obj.check + "" === "True") {
+                        $("#result").html("Payed Successfully!");
+
+                    } else {
+                        $("#result").html("Failed to Pay!");
+
+
+                    }
+
+                });
+
+            }
+
+            jQuery(document).ready(function($) {
+
+                console.log("heart beat called!");
+                $.post("heartbeat.jsp",
+                        {
+                            heartbeat: "heartbeat"
+
+                        },
+                function(data, status) {
+
+                    var obj = jQuery.parseJSON(data);
+
+
+
+                    console.log(obj.user_name);
+
+
+                    if (obj.user_name + "" === "404") {
+                        $("#nosession").visible();
+
+                    } else {
+                        $("#user_name").html(obj.user_name);
+
+                        $("#session").visible();
+
+                    }
+
+                });
+            });
+
+
+
+
+        </script>
+
+    </head>
+
+    <body style="color: chocolate">
+
+        <!--<img src="./sec.jpg"/>-->
+
+        <h2>Payment Gateway</h2>
+
+        <div id="nosession"> Please login first to procede with the payment,
+
+            <a href="./login.html">Login?</a>
+            <br> do not you have account, <a href="./user_registration.html">Register?</a>
+
+        </div>
+
+        <div id="session">
+            welcome  <b id="user_name"> </b><br>
+            You are kindly requested to  <br >
+            pay amount of 300 USD to Vetapharm organization  
+            <br><br>
+
+            <span id="pay" onclick="pay();"> Pay!</span>
+
+
+            <div style="display:none; ">
+                <div id="auth" style="width: 240px;height: 130px">
+
+                </div>
+            </div>
+            <div style="color: red" id="result"> </div> 
+        </div>
+        <br>
+        <br>
+        <i> This is the third-party widget like Facebook like button<br>or pay using payball</i> 
+    </body>
+</html>
+

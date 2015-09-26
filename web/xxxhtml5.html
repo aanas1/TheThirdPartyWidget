@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Sample 1</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="tooltip.js"></script>
+        <link type="text/css" rel="stylesheet" href="tooltip.css">
+        <style>
+            .point {
+                margin-left: -6px;
+                margin-right: -6px;
+
+            } 
+            .p3 {
+                position: absolute;
+                left: 50px;
+                top: 40px;
+            } 
+        </style>
+        <script>
+
+
+            $(document).ready(function() {
+                $(".point").hover(function() {
+
+                    $(this).attr("src", "done.png");
+
+
+                });
+            });
+
+
+            //  $("#2").css({"position":"fixed","top":"50px","right":"50px"});
+//            $(document).ready(function() {
+//                $("#1").css({"position": "fixed", "top": "30px", "left": "30px"});
+//                $("#2").css({"position": "fixed", "top": "50px", "left": "50px"});
+//
+//            });
+
+
+        </script>
+        <script>
+
+
+
+
+            $(document).ready(function() {
+                $("#2").hover(function() {
+                    var c = document.getElementById("myCanvas");
+                    var ctx = c.getContext("2d");
+
+                    ///////
+                    var tLeft = $("#1").position().left;
+                    var tTop = $("#1").position().top + ($("#1").height() / 2);
+
+                    //    alert($("#1").position().left+","+$("#1").position().top);    
+
+                    ctx.moveTo(tLeft, tTop);
+
+                    ///////////////////////////////////   
+                    var tLeft = $("#2").position().left;
+                    var tTop = $("#2").position().top + ($("#2").height() / 2);
+
+                    ctx.lineTo(tLeft, tTop);
+
+                    ctx.stroke();
+                    // this function should draw another point in random location
+                    drawNext();
+
+                });
+            });
+
+
+            function drawNext() {
+
+                var elem = document.createElement("img");
+                elem.setAttribute("src", "ready.png");
+                elem.setAttribute("id", "3");
+                document.getElementById("auth").appendChild(elem);
+                $("#3").addClass("p3");
+
+
+            }
+
+
+        </script>
+    </head>
+    <body>
+
+
+
+        <span onmouseover="tooltip.pop(this, '#auth')" class="tooltip">Pay</span>
+
+        <div style="display:none;">
+            <div id="auth">
+
+                <img src="ready.png" class="point" id="1">
+                <canvas id="myCanvas">Your browser does not support the HTML5 canvas  tag.</canvas>
+                <img src="ready.png" class="point"  id="2">
+
+
+
+
+
+            </div>
+        </div>
+    </body>
+</html>
+
+<!--
+get the position of the first two points from the server
+
+
+
+-->
